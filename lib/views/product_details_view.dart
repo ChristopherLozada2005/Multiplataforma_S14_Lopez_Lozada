@@ -21,6 +21,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
   bool isLoading = false;
   bool isNewProduct = false;
   bool isAvailable = true;
+  DateTime selectedEventDate = DateTime.now();
 
   @override
   void initState() {
@@ -44,6 +45,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
         priceController.text = product.price.toString();
         descriptionController.text = product.description;
         isAvailable = product.isAvailable;
+        selectedEventDate = product.eventDate;
       });
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -51,6 +53,32 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
       );
     }
   }
+
+  Future<void> _selectEventDate() async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: selectedEventDate,
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.light(
+              primary: Colors.grey[800]!,
+              onPrimary: Colors.white,
+              surface: Colors.white,
+              onSurface: Colors.grey[800]!,
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+    if (picked != null && picked != selectedEventDate) {
+      setState(() {
+        selectedEventDate = picked;
+      });
+    }
 
   Future<void> saveProduct() async {
     if (nameController.text.isEmpty || 
@@ -75,6 +103,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
         description: descriptionController.text,
         isAvailable: isAvailable,
         createdDate: isNewProduct ? DateTime.now() : product.createdDate,
+        eventDate: selectedEventDate,
       );
 
       if (isNewProduct) {
@@ -163,6 +192,8 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                     hint: 'Describe el producto',
                     maxLines: 3,
                   ),
+                  SizedBox(height: 16),
+                  _buildDateSelector(),
                   SizedBox(height: 24),
                   Card(
                     child: Padding(
@@ -195,6 +226,54 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                 ],
               ),
             ),
+    );
+  }
+
+  Widget _buildDateSelector() {
+    return Card(
+      child: Padding(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Fecha del Evento',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Colors.grey[800],
+              ),
+            ),
+            SizedBox(height: 8),
+            InkWell(
+              onTap: _selectEventDate,
+              child: Container(
+                padding: EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey[300]!),
+                  borderRadius: BorderRadius.circular(8),
+                  color: Colors.grey[50],
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.calendar_today, color: Colors.grey[600]),
+                    SizedBox(width: 12),
+                    Text(
+                      '${selectedEventDate.day}/${selectedEventDate.month}/${selectedEventDate.year}',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey[800],
+                      ),
+                    ),
+                    Spacer(),
+                    Icon(Icons.arrow_drop_down, color: Colors.grey[600]),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 

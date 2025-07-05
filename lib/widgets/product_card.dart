@@ -78,6 +78,14 @@ class ProductCard extends StatelessWidget {
               ),
               SizedBox(height: 8),
               Text(
+                'Evento: ${product.eventDate.day}/${product.eventDate.month}/${product.eventDate.year}',
+                style: TextStyle(
+                  fontSize: 13,
+                  color: Colors.grey[700],
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              Text(
                 'Creado: ${product.createdDate.day}/${product.createdDate.month}/${product.createdDate.year}',
                 style: TextStyle(
                   fontSize: 12,

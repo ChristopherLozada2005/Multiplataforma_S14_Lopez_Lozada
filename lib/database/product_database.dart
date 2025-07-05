@@ -35,6 +35,7 @@ class ProductDatabase {
         ${ProductFields.price} ${ProductFields.realType},
         ${ProductFields.isAvailable} ${ProductFields.intType},
         ${ProductFields.createdDate} ${ProductFields.textType},
+        ${ProductFields.eventDate} ${ProductFields.textType},
         ${ProductFields.description} ${ProductFields.textType}
       )
     ''');

@@ -5,6 +5,7 @@ class ProductFields {
     price,
     isAvailable,
     createdDate,
+    eventDate,
     description,
   ];
 
@@ -19,6 +20,7 @@ class ProductFields {
   static const String price = 'price';
   static const String isAvailable = 'is_available';
   static const String createdDate = 'created_date';
+  static const String eventDate = 'event_date';
   static const String description = 'description';
 }
 
@@ -28,6 +30,7 @@ class Product {
   final double price;
   final bool isAvailable;
   final DateTime createdDate;
+  final DateTime eventDate;
   final String description;
 
   Product({
@@ -36,6 +39,7 @@ class Product {
     required this.price,
     required this.isAvailable,
     required this.createdDate,
+    required this.eventDate,
     required this.description,
   });
 
@@ -45,6 +49,7 @@ class Product {
     ProductFields.price: price,
     ProductFields.isAvailable: isAvailable ? 1 : 0,
     ProductFields.createdDate: createdDate.toIso8601String(),
+    ProductFields.eventDate: eventDate.toIso8601String(),
     ProductFields.description: description,
   };
 
@@ -54,6 +59,7 @@ class Product {
     price: json[ProductFields.price] as double,
     isAvailable: json[ProductFields.isAvailable] == 1,
     createdDate: DateTime.parse(json[ProductFields.createdDate] as String),
+    eventDate: DateTime.parse(json[ProductFields.eventDate] as String),
     description: json[ProductFields.description] as String,
   );
 
@@ -63,6 +69,7 @@ class Product {
     double? price,
     bool? isAvailable,
     DateTime? createdDate,
+    DateTime? eventDate,
     String? description,
   }) => Product(
     id: id ?? this.id,
@@ -70,6 +77,7 @@ class Product {
     price: price ?? this.price,
     isAvailable: isAvailable ?? this.isAvailable,
     createdDate: createdDate ?? this.createdDate,
+    eventDate: eventDate ?? this.eventDate,
     description: description ?? this.description,
   );
 }
