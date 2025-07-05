@@ -326,4 +326,23 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
               controller: controller,
               keyboardType: keyboardType,
               maxLines: maxLines,
-              decoration: Input
+              decoration: InputDecoration(
+                hintText: hint,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: BorderSide(color: Colors.grey[300]!),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: BorderSide(color: Colors.grey[600]!),
+                ),
+                filled: true,
+                fillColor: Colors.grey[50],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
