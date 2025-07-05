@@ -79,6 +79,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
         selectedEventDate = picked;
       });
     }
+  }
 
   Future<void> saveProduct() async {
     if (nameController.text.isEmpty || 
@@ -237,7 +238,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Fecha del Evento',
+              'Fecha de Vencimiento',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,

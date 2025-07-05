@@ -22,8 +22,9 @@ class ProductDatabase {
     
     return await openDatabase(
       path,
-      version: 1,
+      version: 2,
       onCreate: _createDatabase,
+      onUpgrade: _upgradeDatabase,
     );
   }
 
@@ -39,6 +40,16 @@ class ProductDatabase {
         ${ProductFields.description} ${ProductFields.textType}
       )
     ''');
+  }
+
+  Future<void> _upgradeDatabase(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 2) {
+      // Agregar la columna event_date a la tabla existente
+      await db.execute('''
+        ALTER TABLE ${ProductFields.tableName} 
+        ADD COLUMN ${ProductFields.eventDate} ${ProductFields.textType} DEFAULT '${DateTime.now().toIso8601String()}'
+      ''');
+    }
   }
 
   Future<Product> create(Product product) async {
