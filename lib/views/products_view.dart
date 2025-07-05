@@ -12,9 +12,13 @@ class ProductsView extends StatefulWidget {
 }
 
 class _ProductsViewState extends State<ProductsView> {
-  ProductDatabase productDatabase = ProductDatabase.instance;
+  final productDatabase = ProductDatabase.instance;
   List<Product> products = [];
   bool isLoading = true;
+
+  final Color primaryColor = Colors.teal;
+  final Color backgroundColor = Colors.grey[100]!;
+  final Color textColor = Colors.grey[800]!;
 
   @override
   void initState() {
@@ -32,7 +36,7 @@ class _ProductsViewState extends State<ProductsView> {
     setState(() {
       isLoading = true;
     });
-    
+
     try {
       final productsList = await productDatabase.readAll();
       setState(() {
@@ -59,13 +63,14 @@ class _ProductsViewState extends State<ProductsView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: backgroundColor,
       appBar: AppBar(
         title: Text('Gestión de Productos'),
+        backgroundColor: primaryColor,
         centerTitle: true,
         actions: [
           IconButton(
             onPressed: () {
-              // Implementar búsqueda si es necesario
             },
             icon: Icon(Icons.search),
           ),
@@ -74,51 +79,62 @@ class _ProductsViewState extends State<ProductsView> {
       body: isLoading
           ? Center(child: CircularProgressIndicator())
           : products.isEmpty
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.inventory_2_outlined,
-                        size: 80,
-                        color: Colors.grey[400],
-                      ),
-                      SizedBox(height: 16),
-                      Text(
-                        'No hay productos',
-                        style: TextStyle(
-                          fontSize: 20,
-                          color: Colors.grey[600],
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      SizedBox(height: 8),
-                      Text(
-                        'Toca el botón + para agregar tu primer producto',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey[500],
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                )
+              ? _buildEmptyState()
               : ListView.builder(
                   padding: EdgeInsets.only(top: 8, bottom: 80),
                   itemCount: products.length,
                   itemBuilder: (context, index) {
                     final product = products[index];
-                    return ProductCard(
-                      product: product,
-                      onTap: () => goToProductDetailsView(id: product.id),
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      child: ProductCard(
+                        product: product,
+                        onTap: () => goToProductDetailsView(id: product.id),
+                      ),
                     );
                   },
                 ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton.extended(
         onPressed: () => goToProductDetailsView(),
-        tooltip: 'Agregar Producto',
-        child: Icon(Icons.add),
+        icon: Icon(Icons.add),
+        label: Text('Agregar'),
+        backgroundColor: primaryColor,
+      ),
+    );
+  }
+
+  Widget _buildEmptyState() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 32),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.inventory_2_outlined,
+              size: 80,
+              color: Colors.grey[400],
+            ),
+            SizedBox(height: 16),
+            Text(
+              'No hay productos',
+              style: TextStyle(
+                fontSize: 20,
+                color: Colors.grey[600],
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            SizedBox(height: 8),
+            Text(
+              'Toca el botón + para agregar tu primer producto',
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey[500],
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
     );
   }

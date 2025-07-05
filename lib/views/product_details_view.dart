@@ -12,16 +12,21 @@ class ProductDetailsView extends StatefulWidget {
 }
 
 class _ProductDetailsViewState extends State<ProductDetailsView> {
-  ProductDatabase productDatabase = ProductDatabase.instance;
-  TextEditingController nameController = TextEditingController();
-  TextEditingController priceController = TextEditingController();
-  TextEditingController descriptionController = TextEditingController();
+  final productDatabase = ProductDatabase.instance;
+  final nameController = TextEditingController();
+  final priceController = TextEditingController();
+  final descriptionController = TextEditingController();
 
   late Product product;
   bool isLoading = false;
   bool isNewProduct = false;
   bool isAvailable = true;
   DateTime selectedEventDate = DateTime.now();
+
+  final Color primaryColor = Colors.teal;
+  final Color backgroundColor = Colors.grey[100]!;
+  final Color cardColor = Colors.white;
+  final Color textColor = Colors.grey[800]!;
 
   @override
   void initState() {
@@ -55,7 +60,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
   }
 
   Future<void> _selectEventDate() async {
-    final DateTime? picked = await showDatePicker(
+    final picked = await showDatePicker(
       context: context,
       initialDate: selectedEventDate,
       firstDate: DateTime(2000),
@@ -64,10 +69,10 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: ColorScheme.light(
-              primary: Colors.grey[800]!,
+              primary: primaryColor,
               onPrimary: Colors.white,
               surface: Colors.white,
-              onSurface: Colors.grey[800]!,
+              onSurface: textColor,
             ),
           ),
           child: child!,
@@ -82,8 +87,8 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
   }
 
   Future<void> saveProduct() async {
-    if (nameController.text.isEmpty || 
-        priceController.text.isEmpty || 
+    if (nameController.text.isEmpty ||
+        priceController.text.isEmpty ||
         descriptionController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Por favor completa todos los campos')),
@@ -153,19 +158,23 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: backgroundColor,
       appBar: AppBar(
         title: Text(isNewProduct ? 'Nuevo Producto' : 'Editar Producto'),
+        backgroundColor: primaryColor,
         actions: [
           if (!isNewProduct)
             IconButton(
               onPressed: deleteProduct,
-              icon: Icon(Icons.delete, color: Colors.red),
+              icon: Icon(Icons.delete, color: Colors.red[300]),
             ),
-          IconButton(
-            onPressed: saveProduct,
-            icon: Icon(Icons.save),
-          ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: saveProduct,
+        icon: Icon(Icons.save),
+        label: Text('Guardar'),
+        backgroundColor: primaryColor,
       ),
       body: isLoading
           ? Center(child: CircularProgressIndicator())
@@ -196,42 +205,52 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                   SizedBox(height: 16),
                   _buildDateSelector(),
                   SizedBox(height: 24),
-                  Card(
-                    child: Padding(
-                      padding: EdgeInsets.all(16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Disponibilidad',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.grey[800],
-                            ),
-                          ),
-                          SizedBox(height: 8),
-                          SwitchListTile(
-                            title: Text('Producto disponible'),
-                            value: isAvailable,
-                            onChanged: (value) {
-                              setState(() {
-                                isAvailable = value;
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                  _buildAvailabilitySwitch(),
                 ],
               ),
             ),
     );
   }
 
+  Widget _buildAvailabilitySwitch() {
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      elevation: 2,
+      color: cardColor,
+      child: Padding(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Disponibilidad',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: textColor,
+              ),
+            ),
+            SizedBox(height: 8),
+            SwitchListTile(
+              title: Text('Producto disponible'),
+              value: isAvailable,
+              onChanged: (value) {
+                setState(() {
+                  isAvailable = value;
+                });
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildDateSelector() {
     return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      elevation: 2,
+      color: cardColor,
       child: Padding(
         padding: EdgeInsets.all(16),
         child: Column(
@@ -242,7 +261,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
-                color: Colors.grey[800],
+                color: textColor,
               ),
             ),
             SizedBox(height: 8),
@@ -263,7 +282,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                       '${selectedEventDate.day}/${selectedEventDate.month}/${selectedEventDate.year}',
                       style: TextStyle(
                         fontSize: 16,
-                        color: Colors.grey[800],
+                        color: textColor,
                       ),
                     ),
                     Spacer(),
@@ -286,6 +305,9 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
     int maxLines = 1,
   }) {
     return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      elevation: 2,
+      color: cardColor,
       child: Padding(
         padding: EdgeInsets.all(16),
         child: Column(
@@ -296,7 +318,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
-                color: Colors.grey[800],
+                color: textColor,
               ),
             ),
             SizedBox(height: 8),
@@ -304,23 +326,4 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
               controller: controller,
               keyboardType: keyboardType,
               maxLines: maxLines,
-              decoration: InputDecoration(
-                hintText: hint,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(color: Colors.grey[300]!),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(color: Colors.grey[600]!),
-                ),
-                filled: true,
-                fillColor: Colors.grey[50],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
+              decoration: Input
